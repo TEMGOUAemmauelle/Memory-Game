@@ -34,25 +34,27 @@ function App() {
   useEffect(() => {
     if (flippedCards.length === 2) {
       const [first, second] = flippedCards;
+  
       if (cards[first].emoji === cards[second].emoji) {
+        // Marquer les cartes comme appariées
         setCards(cards.map((card, index) =>
-          index === first || index === second
-            ? { ...card, isMatched: true }
-            : card
+          index === first || index === second ? { ...card, isMatched: true } : card
         ));
         setScore(score + 1);
+      } else {
+        // Retourner les cartes après un délai si elles ne matchent pas
+        setTimeout(() => {
+          setCards(cards.map((card, index) =>
+            flippedCards.includes(index) ? { ...card, isFlipped: false } : card
+          ));
+        }, 1000);
       }
-      setTimeout(() => {
-        setCards(cards.map((card, index) =>
-          flippedCards.includes(index) && !card.isMatched
-            ? { ...card, isFlipped: false }
-            : card
-        ));
-        setFlippedCards([]);
-      }, 1000);
+  
+      setFlippedCards([]);
       setMoves(moves + 1);
     }
   }, [flippedCards]);
+  
 
   const handleCardClick = (index: number) => {
     if (
